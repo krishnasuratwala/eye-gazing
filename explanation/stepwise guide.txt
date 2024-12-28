@@ -1,0 +1,50 @@
+STEP1:-alright use media pipe for creating a 478 point landmarks on the face in real time using webcam 
+
+STEP2:-using this coordinates in detecting the exact pupil center in the eyes and present it in bounding box using following landmarks number:
+                  for left eye:-476,475,474,477(bounding box around the iris),473 for center of the left pupil
+                  for right eye:-471,470,469,472(bounding box around the iris),468 for center of right pupil
+
+STEP3:-now i want to find the relative position of the pupil center with respect to the following eye landmarks and other facial landmarks
+                   for left pupil center:-difference between left pupil center and left_eye_landmarks[463,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398,389,251,284,332,297,338,10,109,67,103,53,21,162,151,9,8,168,6,197,195,5,4,1,19,164,0]
+                   for right pupil center:-difference between right pupil center and right_eye_landmark[33,7,163,144,153,154,155,145,133,173,157,158,159,160,161,246,389,251,284,332,297,338,10,109,67,103,53,21,162,151,9,8,168,6,197,195,5,4,1,19,164,0]
+note:--all values for x and y coordinates  for the above landmark should be with respect to the frame (values od x and y  coordinates are between 0 and 1 that is 
+i)actual_x_value/width, 
+ii)actual_y_value/height
+
+STEP4:-calculate the EAR(eye aspect ratio) values for both the eye and add all the values in the csv file(including the differences we calculated in step3)..
+
+STEP5:-add the following coordinates in the csv file, this will helps in the detecting roll moment of head:-[10,151,9,8,168,6,197,195,5,4,1,19,164,0,267,269,270,409,375,321,405,314,17,84,181,91,146,37,39,40,185,61]
+
+STEP6:-now in order to calculate or detect the yaw moment of head ,we need to calculate difference between following points
+    i)10 and (105,338)
+    ii)151 and 0(67,297)
+    iii)9 and (21,251)
+    iv)8 and (162,389)
+    v)8 and (162,389)
+    vi)6 and (127,356)
+    vii)195 and 234,454)
+    viii)5 and (93,366)
+
+add the data in csv file
+
+STEP7:-now in order to calculate and detect the pitch of the head moment, we need to calculate the difference between the following points
+10 and [116,118,47,195,277,349,345]
+and add the data into csv file
+
+STEP8:-now this the enough features wee need to calculate for ,but in future we may need the image associated with each data instance, so we will be collecting the image frame by frame and extract enhance left eye and right eye cropped image using histogram equalizer and giving extra 5 pixel of margin to the cropped eye image for clear understanding, and saving the image in parent directory and giving the associates path to csv that maps with associates data instance
+
+STEP9:-implementing logic for removing noise from the generated data such as 
+      i)the image having closed eyes
+      ii)the frame/image with partial face
+      iii)the frame/image having blurry appearance
+      iv)data instance with incomplete data
+
+STEP10: implement a logic tat can find the distance between latop screen/camera and user's face using following formulas:
+  1.focal_length_of_camera=(actual_distance_between_eyes/pixelated_distance_between_eyes_using mediapipe)*60(considered distance between    user and screen)
+  2.distance_btn_user_and_screen=(actual_distance_between_eyes/pixelated_distance_between_eyes_using mediapipe)*focal_length
+
+add all the data to the csv 
+
+step11:-add a logic such that coordinates on the cursor can be recorded(given that user need to se at the cursor constantly with different headposes)
+
+STEP12:-run the script till enough data is not collected(approx. 30,000 lines of data)

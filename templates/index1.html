@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6x6 Grid Layout</title>
+    <style>
+         body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Grid at the top, buttons at the bottom */
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 3 equal columns */
+            grid-template-rows: repeat(2, 1fr); /* 3 equal rows */
+            width: 100%;
+            height: 100%; /* Reserve space for the buttons */
+            gap: 0; /* No gaps between grid items */
+        }
+
+        .grid-item {
+            overflow: hidden; /* Prevents overflow issues */
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures images fill their cells proportionally */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between buttons */
+            width: 100%;
+            padding: 10px;
+            background-color: #eaeaea;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .end-button {
+            background-color: #dc3545;
+        }
+
+        .end-button:hover {
+            background-color: #a71d2a;
+        }
+        /* Button and status styling */
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #status {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        #analysis {
+            font-size: 16px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        #analysis-image {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            display: none; /* Hide initially */
+        }
+    </style>
+     <script>
+        // Function to send AJAX request for starting or stopping the loop
+        function sendRequest(action) {
+            fetch(`/${action}`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display a message dynamically without page reload
+                document.getElementById('status').innerText = data.message;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+         // Function to fetch and display analysis data
+         function showAnalysis() {
+            fetch('/analysis', {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the analysis dynamically
+               
+                const img = document.getElementById('analysis-image');
+                img.src = data.image_url; // Set the image source from Flask response
+                img.style.display = 'block'; // Show the image after setting the source
+            })
+            .catch(error => console.error('Error fetching analysis:', error));
+        }
+    </script>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- Add your images here -->
+        <div class="grid-item"><img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Image 1"></div>
+        <div class="grid-item"><img src="{{ url_for('static', filename='images/image2.webp') }}" alt="Image 2"></div>
+        <div class="grid-item"><img src="{{ url_for('static', filename='images/image3.webp') }}" alt="Image 3"></div>
+        <div class="grid-item"><img src="{{ url_for('static', filename='images/image4.webp') }}" alt="Image 4"></div>
+
+    </div>
+    <div class="controls">
+        <button onclick="sendRequest('start')">Start Loop</button>
+        <button onclick="sendRequest('stop')">Stop Loop</button>
+        <button onclick="showAnalysis()">Show Analysis</button>
+        <p id="status">Press a button to control the loop.</p>
+        <p id="analysis"></p> <!-- Display analysis here -->
+        
+        <!-- Image to display from Flask response -->
+        <img id="analysis-image" alt="Analysis Image">
+        
+    </div>
+</body>
+</html>
